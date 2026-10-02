@@ -1,0 +1,30 @@
+{
+  // Mirrors the former prettier.config.js.
+  "printWidth": 120,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "singleQuote": false,
+  "trailingComma": "all",
+  // Keep Prettier-equivalent behavior: oxfmt-only extras stay off until approved.
+  "sortPackageJson": false,
+  "sortImports": false,
+  "sortTailwindcss": false,
+  "ignorePatterns": [
+    "dist",
+    "node_modules",
+    ".wrangler",
+    ".wrangler-shared",
+    ".output",
+    "apps/*/.astro/",
+    "apps/api/migrations/meta/",
+    "apps/*/src/app/route-tree.gen.ts",
+    "apps/*/src/app/routeTree.gen.ts",
+    "graphify-out/",
+    "worker-configuration.d.ts",
+    "bun.lock",
+    "docs/sales/*.html",
+    // Prettier-only territory until oxfmt supports Astro.
+    "apps/landing/**/*.astro",
+  ],
+}

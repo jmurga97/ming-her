@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.wrangler/
+.turbo/
+.env
+.env.*
+!.env.example
+.dev.vars
+.dev.vars.*
+worker-configuration.d.ts
+apps/web/src/app/route-tree.gen.ts
+.DS_Store

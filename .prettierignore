@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.wrangler/
+.turbo/
+worker-configuration.d.ts
+apps/web/src/app/route-tree.gen.ts
+apps/api/migrations/meta/
+bun.lock

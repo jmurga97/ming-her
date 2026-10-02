@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ming-her-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-06-16",
+  "compatibility_flags": ["nodejs_compat"],
+  // Local values go in apps/api/.dev.vars (git-ignored).
+  "secrets": { "required": ["JEV_API_KEY", "LLM_SECRET"] },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ming-her-local",
+      // Local placeholder; no Cloudflare account or remote database is needed.
+      "database_id": "00000000-0000-0000-0000-000000000001",
+      "migrations_dir": "migrations",
+      "remote": false,
+    },
+  ],
+}

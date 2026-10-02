@@ -1,0 +1,31 @@
+{
+  "name": "@ming-her/api",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./router": {
+      "types": "./src/trpc/router.ts"
+    }
+  },
+  "scripts": {
+    "dev": "wrangler dev --local --ip 127.0.0.1 --port 8791 --inspector-port 9235",
+    "build": "wrangler types && tsc --noEmit && wrangler deploy --dry-run --outdir dist",
+    "check": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate --config drizzle.config.ts",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local",
+    "scenarios": "bun --env-file=.dev.vars scripts/run-scenarios.ts",
+    "check:policy": "bun scripts/check-policy.ts"
+  },
+  "dependencies": {
+    "@ming-her/db": "workspace:*",
+    "@trpc/server": "11.18.0",
+    "drizzle-orm": "0.44.7"
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "drizzle-kit": "0.31.10",
+    "typescript": "7.0.2",
+    "wrangler": "4.118.0"
+  }
+}

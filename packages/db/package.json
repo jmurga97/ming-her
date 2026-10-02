@@ -1,0 +1,20 @@
+{
+  "name": "@ming-her/db",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./client": "./src/client.ts",
+    "./schema": "./src/schema/index.ts"
+  },
+  "scripts": {
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "drizzle-orm": "0.44.7"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260502.0",
+    "typescript": "7.0.2"
+  }
+}
