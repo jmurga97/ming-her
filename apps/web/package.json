@@ -10,6 +10,7 @@
     "smoke": "bun scripts/smoke.ts"
   },
   "dependencies": {
+    "@jmurga97/components": "2.0.4",
     "@ming-her/api": "workspace:*",
     "@tanstack/react-query": "^5.101.2",
     "@tanstack/react-router": "^1.170.16",

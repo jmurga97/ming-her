@@ -100,7 +100,7 @@ export async function askJev(
     }),
   });
   if (!response.ok) throw new Error(`Jev ${response.status}: ${await response.text()}`);
-  const raw = await response.json<JevResponse>();
+  const raw: JevResponse = await response.json();
   const { intent, department, injection, frustration } = raw.answers ?? {};
   if (!isChoice(intent) || !isChoice(department)) throw new TypeError("Jev returned no choice answers");
   if (typeof injection?.noul !== "number" || typeof frustration?.score !== "number") {

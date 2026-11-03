@@ -2,8 +2,26 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
+    <script>
+      (() => {
+        const key = "app-theme";
+        let stored = null;
+        try {
+          stored = localStorage.getItem(key);
+        } catch {}
+        const theme =
+          stored === "light" || stored === "dark"
+            ? stored
+            : matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+        document.documentElement.classList.remove("light", "dark");
+        document.documentElement.classList.add(theme);
+        document.documentElement.style.colorScheme = theme;
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ming-her</title>
+    <title>Her · Inspector de conversaciones</title>
   </head>
   <body>
     <div id="root"></div>

@@ -11,7 +11,7 @@ export type Decision = {
 };
 
 // ponytail: starting thresholds by risk, unvalidated; calibrate them against scenario runs.
-const MIN_INTENT_CONFIDENCE: Record<string, number> = {
+export const MIN_INTENT_CONFIDENCE: Record<string, number> = {
   book_appointment: 0.6,
   leave_message: 0.6,
   send_email: 0.6,
@@ -21,9 +21,9 @@ const MIN_INTENT_CONFIDENCE: Record<string, number> = {
   small_talk: 0.5,
   out_of_scope: 0.5,
 };
-const MIN_DEPARTMENT_CONFIDENCE = 0.7;
-const MAX_INJECTION = 0.5;
-const APOLOGY_FRUSTRATION = 1.5;
+export const MIN_DEPARTMENT_CONFIDENCE = 0.7;
+export const MAX_INJECTION = 0.5;
+export const APOLOGY_FRUSTRATION = 1.5;
 
 const LINES = {
   book_appointment:

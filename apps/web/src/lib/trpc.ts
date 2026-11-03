@@ -8,3 +8,4 @@ export const queryClient = new QueryClient();
 export const trpcClient = createTRPCClient<AppRouter>({ links: [httpBatchLink({ url: "/trpc" })] });
 export const trpc = createTRPCOptionsProxy<AppRouter>({ client: trpcClient, queryClient });
 export type RouterContext = { queryClient: QueryClient; trpc: typeof trpc };
+export type LiveData = Awaited<ReturnType<typeof trpcClient.live.query>>;

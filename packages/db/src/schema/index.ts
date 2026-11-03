@@ -10,6 +10,8 @@ export const turns = sqliteTable(
     conversationId: text("conversation_id").notNull(),
     turnIndex: integer("turn_index").notNull(),
     utterance: text("utterance").notNull(),
+    // The agent's line just before `utterance`, as ElevenLabs sent it; turn 1 gets the First message.
+    receptionistLastSaid: text("receptionist_last_said"),
     intent: text("intent"),
     intentConfidence: real("intent_confidence"),
     department: text("department"),

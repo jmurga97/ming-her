@@ -1,0 +1,492 @@
+/* Conversation inspector: braces, probability bars, the turn picker and the chat. Ming tokens only. */
+
+.ti-muted {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.ti-figure {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.ti-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--ming-space-3);
+}
+
+/* ---- Tree: the focal block of the page ------------------------------------------------------ */
+.ti-tree {
+  display: grid;
+  gap: var(--ming-space-5);
+  padding: var(--ming-space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  container-type: inline-size;
+  animation: ti-fade var(--ming-duration-normal) var(--ming-ease-out);
+}
+
+.ti-input {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: var(--ming-space-5);
+  margin: 0;
+  padding-block-end: var(--ming-space-5);
+  border-block-end: 1px solid var(--border);
+}
+
+.ti-input dt,
+.ti-result dt,
+.ti-row dt {
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+}
+
+.ti-input dd {
+  margin: var(--ming-space-1) 0 0;
+  color: var(--muted-foreground);
+  overflow-wrap: anywhere;
+}
+
+.ti-input .ti-input__caller {
+  color: var(--foreground);
+  font-size: 1.125rem;
+}
+
+.ti-flow {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--ming-space-5);
+}
+
+.ti-col {
+  display: grid;
+  align-content: start;
+  gap: var(--ming-space-3);
+  min-width: 0;
+}
+
+.ti-col h3 {
+  margin: 0;
+}
+
+/* A brace: rounded bracket with a tip pointing back to what it reads from. */
+.ti-brace {
+  position: relative;
+  min-width: 0;
+  padding-inline-start: var(--ming-space-5);
+  --ti-brace-color: var(--border);
+}
+
+.ti-brace[data-lit="true"] {
+  --ti-brace-color: var(--foreground);
+}
+
+.ti-brace__mark {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: var(--ming-space-2);
+  inline-size: var(--ming-space-2);
+  border: 1px solid var(--ti-brace-color);
+  border-inline-end: none;
+  border-start-start-radius: var(--radius);
+  border-end-start-radius: var(--radius);
+  transition: border-color var(--ming-duration-normal) var(--ming-ease);
+}
+
+.ti-brace__mark::before {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: calc(var(--ming-space-2) * -1);
+  inline-size: var(--ming-space-2);
+  border-block-start: 1px solid var(--ti-brace-color);
+  content: "";
+}
+
+/* ---- Jev questions and their options ------------------------------------------------------- */
+.ti-questions {
+  display: grid;
+  gap: var(--ming-space-5);
+}
+
+.ti-question {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  align-items: center;
+  gap: var(--ming-space-2);
+}
+
+.ti-question__head h4 {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.ti-question__head p {
+  margin: var(--ming-space-1) 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+
+.ti-options,
+.ti-steps,
+.ti-picker,
+.ti-chat {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ti-options {
+  display: grid;
+  gap: var(--ming-space-1);
+}
+
+.ti-option,
+.ti-step {
+  display: grid;
+  grid-template-columns: var(--ming-dot) minmax(8.5rem, 1.4fr) minmax(3rem, 1fr) 4.5rem;
+  align-items: center;
+  gap: var(--ming-space-2);
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  transition: color var(--ming-duration-normal) var(--ming-ease);
+}
+
+.ti-option[data-chosen="true"],
+.ti-step[data-status="hit"],
+.ti-step[data-status="pass"] {
+  color: var(--foreground);
+}
+
+.ti-option__dot {
+  flex: none;
+  inline-size: var(--ming-dot);
+  block-size: var(--ming-dot);
+  border-radius: var(--ming-radius-pill);
+  background: transparent;
+}
+
+/* Red marks what was chosen, what changed the reply, and the turn on screen. */
+.ti-option[data-chosen="true"] .ti-option__dot,
+.ti-step[data-status="hit"] .ti-option__dot,
+[aria-current="true"] .ti-option__dot {
+  background: var(--ming-signal);
+}
+
+.ti-step[data-status="pass"] .ti-option__dot {
+  background: var(--foreground);
+}
+
+.ti-option__label {
+  overflow-wrap: anywhere;
+}
+
+.ti-option__value {
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+.ti-option__threshold {
+  color: var(--muted-foreground);
+}
+
+.ti-option__empty {
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+
+.ti-bar {
+  position: relative;
+  display: block;
+  block-size: var(--ming-space-2);
+  background: var(--muted);
+}
+
+.ti-bar__fill {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  background: var(--muted-foreground);
+}
+
+.ti-option[data-chosen="true"] .ti-bar__fill,
+.ti-result .ti-bar__fill {
+  background: var(--foreground);
+}
+
+.ti-bar__tick {
+  position: absolute;
+  inset-block: calc(var(--ming-space-1) * -1);
+  inline-size: 1px;
+  background: var(--foreground);
+}
+
+/* ---- Policy steps and reply ----------------------------------------------------------------- */
+.ti-steps {
+  display: grid;
+  gap: var(--ming-space-3);
+}
+
+.ti-step {
+  grid-template-columns: var(--ming-dot) minmax(0, 1fr);
+  row-gap: 0;
+}
+
+.ti-step[data-status="off"] {
+  opacity: 0.5;
+}
+
+.ti-step__label {
+  font-weight: 500;
+}
+
+.ti-step__note {
+  grid-column: 2;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+.ti-step[data-status="pass"] .ti-step__note {
+  color: var(--muted-foreground);
+}
+
+.ti-result {
+  display: grid;
+  gap: var(--ming-space-1);
+  margin: 0;
+}
+
+.ti-result dd {
+  margin: 0 0 var(--ming-space-3);
+  overflow-wrap: anywhere;
+}
+
+.ti-result .ti-result__reply {
+  font-size: 1rem;
+}
+
+.ti-result .ti-bar {
+  margin-block-end: var(--ming-space-1);
+}
+
+/* ---- Turn picker: the path of the call -------------------------------------------------------- */
+.ti-picker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ming-space-2);
+}
+
+.ti-picker > li {
+  display: flex;
+  align-items: center;
+  gap: var(--ming-space-2);
+}
+
+.ti-picker > li + li::before {
+  color: var(--muted-foreground);
+  content: "→";
+}
+
+.ti-picker__turn,
+.ti-exchange {
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--foreground);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: background-color var(--ming-duration-fast) var(--ming-ease);
+}
+
+.ti-picker__turn {
+  display: flex;
+  align-items: center;
+  gap: var(--ming-space-2);
+  padding: var(--ming-space-2) var(--ming-space-3);
+  border-color: var(--border);
+  border-radius: var(--ming-radius-control);
+}
+
+.ti-picker__name {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.ti-picker__turn:hover,
+.ti-exchange:hover,
+.ti-picker__turn[aria-current="true"],
+.ti-exchange[aria-current="true"] {
+  background: var(--accent);
+}
+
+.ti-picker__turn[aria-current="true"] {
+  border-color: var(--foreground);
+}
+
+.ti-picker__turn:focus-visible,
+.ti-exchange:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* ---- Chat ------------------------------------------------------------------------------------ */
+.ti-chat {
+  display: grid;
+}
+
+.ti-chat > li + li {
+  border-block-start: 1px solid var(--border);
+}
+
+.ti-chat > .ti-chat__line {
+  padding: var(--ming-space-4) var(--ming-space-3);
+}
+
+.ti-exchange {
+  display: grid;
+  gap: var(--ming-space-3);
+  inline-size: 100%;
+  padding: var(--ming-space-4) var(--ming-space-3);
+}
+
+.ti-exchange__head {
+  display: flex;
+  align-items: center;
+  gap: var(--ming-space-2);
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+}
+
+.ti-chat__line {
+  display: grid;
+  gap: var(--ming-space-1);
+}
+
+.ti-chat__line p {
+  margin: 0;
+}
+
+/* The agent answers indented under the caller, like a reply. */
+.ti-chat__line--agent {
+  margin-inline-start: var(--ming-space-5);
+  padding-inline-start: var(--ming-space-4);
+  border-inline-start: 1px solid var(--border);
+}
+
+.ti-chat > .ti-chat__line--agent {
+  margin-inline-start: var(--ming-space-3);
+}
+
+.ti-chat__who {
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ti-chat__caller {
+  font-size: 1rem;
+}
+
+/* ---- D1 row ---------------------------------------------------------------------------------- */
+.ti-raw summary {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.ti-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  column-gap: var(--ming-space-5);
+  margin: var(--ming-space-3) 0 0;
+}
+
+.ti-row > div {
+  display: grid;
+  gap: var(--ming-space-1);
+  padding-block: var(--ming-space-2);
+  border-block-end: 1px solid var(--border);
+}
+
+.ti-row dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.ti-raw pre {
+  max-block-size: 24rem;
+  overflow: auto;
+  margin: var(--ming-space-2) 0 0;
+  padding: var(--ming-space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+/* ---- Narrow: columns stack, braces become top rules ------------------------------------------- */
+@container (max-width: 60rem) {
+  .ti-input,
+  .ti-flow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ti-flow > .ti-col > .ti-brace {
+    padding-block-start: var(--ming-space-3);
+    padding-inline-start: 0;
+  }
+
+  .ti-flow > .ti-col > .ti-brace > .ti-brace__mark {
+    inset-block-end: auto;
+    inset-inline: 0;
+    inline-size: auto;
+    block-size: var(--ming-space-2);
+    border: 1px solid var(--ti-brace-color);
+    border-block-end: none;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+
+  .ti-flow > .ti-col > .ti-brace > .ti-brace__mark::before {
+    display: none;
+  }
+}
+
+@container (max-width: 36rem) {
+  .ti-question {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 40rem) {
+  .ti-tree {
+    padding: var(--ming-space-4);
+  }
+}
+
+@keyframes ti-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ti-tree {
+    animation: none;
+  }
+}

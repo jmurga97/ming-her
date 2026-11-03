@@ -1,0 +1,1 @@
+ALTER TABLE `turns` ADD `receptionist_last_said` text;

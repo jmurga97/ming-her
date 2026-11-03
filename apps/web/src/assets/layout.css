@@ -1,0 +1,319 @@
+/*
+ * Ming page layout primitives.
+ * The component library ships no page layout helpers; these are the app-owned ones.
+ * Every value is a Ming token. Load after the Ming stylesheet.
+ */
+:root {
+  --ming-page-wide: 80rem; /* list, overview and editor pages */
+  --ming-page-narrow: 40rem; /* settings, single-column forms, prose */
+  --ming-toolbar-search: 22rem;
+}
+
+@layer ming-layout {
+  /* ---- Accessible heading --------------------------------------------------------------- */
+  .ming-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* ---- Page ---------------------------------------------------------------------------- */
+  /* Direct child of AppShell's main region. AppShell already pads main (32px, 16px on mobile). */
+  .ming-page {
+    display: grid;
+    width: 100%;
+    max-width: var(--ming-page-wide);
+    align-content: start;
+    gap: var(--ming-space-6);
+    margin-inline: auto;
+  }
+  .ming-page--narrow {
+    max-width: var(--ming-page-narrow);
+  }
+
+  /* Page header: title block on the start side, page actions on the end side. */
+  .ming-page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--ming-space-4);
+  }
+  .ming-page-header__title {
+    display: grid;
+    min-width: 0;
+    gap: var(--ming-space-2);
+  }
+  .ming-page-header__title h1,
+  .ming-page-header__title h2 {
+    margin: 0;
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: 1.5rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .ming-page-header__title p {
+    max-width: var(--ming-page-narrow);
+    margin: 0;
+    color: var(--muted-foreground);
+    font-size: 0.9375rem;
+  }
+  .ming-page-header__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--ming-space-2);
+  }
+
+  /* Breadcrumb in the AppShell header: muted trail, current page in foreground. Not a heading. */
+  .ming-breadcrumb {
+    display: flex;
+    min-width: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--ming-space-2);
+    margin: 0;
+    padding: 0;
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+    list-style: none;
+  }
+  .ming-breadcrumb li + li::before {
+    margin-inline-end: var(--ming-space-2);
+    content: "/";
+  }
+  .ming-breadcrumb [aria-current="page"] {
+    color: var(--foreground);
+    font-weight: 500;
+  }
+
+  /* Eyebrow: Mono label above a title or section ("Menus / Summer"). */
+  .ming-eyebrow {
+    margin: 0;
+    color: var(--muted-foreground);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  /* Section: a titled group inside a page. */
+  .ming-section {
+    display: grid;
+    gap: var(--ming-space-4);
+  }
+  .ming-section__title {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 1.125rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.35;
+  }
+  .ming-section__description {
+    margin: 0;
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  /* ---- Toolbar (above a table) -------------------------------------------------------- */
+  .ming-toolbar {
+    display: flex;
+    min-height: 3.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--ming-space-3);
+  }
+  .ming-toolbar__search {
+    width: 100%;
+    max-width: var(--ming-toolbar-search);
+  }
+  /* Wraps a Select or other filter so it doesn't stretch across the toolbar. */
+  .ming-toolbar__filter {
+    width: 12rem;
+    flex: 0 0 auto;
+  }
+  .ming-toolbar__end {
+    display: flex;
+    align-items: center;
+    gap: var(--ming-space-2);
+    margin-inline-start: auto;
+  }
+
+  /* ---- Stacks and clusters ------------------------------------------------------------ */
+  /* Vertical rhythm. Default 16px = "same group". */
+  .ming-stack {
+    display: grid;
+    align-content: start;
+    gap: var(--ming-space-4);
+  }
+  .ming-stack--tight {
+    gap: var(--ming-space-2);
+  }
+  .ming-stack--loose {
+    gap: var(--ming-space-6);
+  }
+  /* Horizontal groups: buttons, badges beside titles, filters. */
+  .ming-cluster {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--ming-space-2);
+  }
+  .ming-cluster--end {
+    justify-content: flex-end;
+  }
+  .ming-cluster--between {
+    justify-content: space-between;
+  }
+
+  /* ---- Grids -------------------------------------------------------------------------- */
+  /* Equal columns that collapse to one below 40rem. Use 2 or 3; never 4+ for content. */
+  .ming-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--ming-columns, 2), minmax(0, 1fr));
+    align-items: start;
+    gap: var(--ming-space-5);
+  }
+  .ming-grid--3 {
+    --ming-columns: 3;
+  }
+  .ming-grid__span-2 {
+    grid-column: span 2;
+  }
+  /* Main + side column (detail pages without ResourceEditor, overview + activity). */
+  .ming-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 22rem);
+    align-items: start;
+    gap: var(--ming-space-6);
+  }
+  /* Section navigation (settings) + content. */
+  .ming-sectioned {
+    display: grid;
+    grid-template-columns: 14rem minmax(0, var(--ming-page-narrow));
+    align-items: start;
+    gap: var(--ming-space-6);
+  }
+  .ming-sectioned > :first-child {
+    position: sticky;
+    inset-block-start: var(--ming-space-6);
+  }
+
+  /* ---- Settings rows ------------------------------------------------------------------ */
+  .ming-setting-list {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--card);
+    list-style: none;
+  }
+  .ming-setting {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--ming-space-4);
+    padding: var(--ming-space-4) var(--ming-space-5);
+    border-block-start: 1px solid var(--border);
+  }
+  .ming-setting:first-child {
+    border-block-start: 0;
+  }
+  .ming-setting__copy {
+    display: grid;
+    gap: var(--ming-space-1);
+  }
+  .ming-setting__description {
+    margin: 0;
+    color: var(--muted-foreground);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  /* ---- Empty / first run -------------------------------------------------------------- */
+  .ming-empty {
+    display: grid;
+    justify-items: start;
+    gap: var(--ming-space-4);
+    max-width: var(--ming-page-narrow);
+    padding-block: var(--ming-space-7);
+  }
+  .ming-empty h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .ming-empty p {
+    margin: 0;
+    color: var(--muted-foreground);
+  }
+
+  /* ---- Prose (help text, docs pages) -------------------------------------------------- */
+  .ming-prose {
+    max-width: var(--ming-page-narrow);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+  .ming-prose a {
+    color: var(--ming-link);
+    text-underline-offset: 0.2em;
+  }
+
+  /* ---- Figures and data --------------------------------------------------------------- */
+  .ming-data {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (max-width: 56rem) {
+  .ming-split,
+  .ming-sectioned {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ming-sectioned > :first-child {
+    position: static;
+  }
+  .ming-grid--3 {
+    --ming-columns: 2;
+  }
+}
+
+@media (max-width: 40rem) {
+  .ming-page {
+    gap: var(--ming-space-5);
+  }
+  .ming-grid,
+  .ming-grid--3 {
+    --ming-columns: 1;
+  }
+  .ming-grid__span-2 {
+    grid-column: auto;
+  }
+  .ming-page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .ming-toolbar__search,
+  .ming-toolbar__filter {
+    width: 100%;
+    max-width: none;
+  }
+  .ming-setting {
+    padding-inline: var(--ming-space-4);
+  }
+}

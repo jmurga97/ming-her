@@ -56,6 +56,7 @@ export async function handleChatCompletions({
     conversationId,
     turnIndex: userIndexes.length,
     utterance,
+    receptionistLastSaid,
     intent: jev?.judgments.intent.choice ?? null,
     intentConfidence: jev?.judgments.intent.confidence ?? null,
     department: jev?.judgments.department.choice ?? null,
